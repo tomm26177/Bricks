@@ -1,14 +1,21 @@
 import java.sql.Array;
 
 public class Box {
-    static int index = 0;
-    private static String[] BrickArray  = new String[10000000];
+    private static final Box INSTANCE = new Box();
+     int index = 0;
+    private String[] brickArray  = new String[10000000];
+
+    private Box() {}
+
+    public static Box getInstance() {
+        return INSTANCE;
+    }
 
     public void addBrick(String brickName){
-        BrickArray[index++] = brickName;
+        brickArray[index++] = brickName;
     }
 
     public String[] getBrickArray(){
-        return BrickArray;
+        return brickArray;
     }
 }
