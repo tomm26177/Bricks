@@ -19,4 +19,8 @@ public class Instruction {
         return id;
     }
 
+    public int getIndex(){
+        return index;
+    }
+
 }
