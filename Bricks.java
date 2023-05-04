@@ -35,11 +35,28 @@ public class Bricks {
         int number = Integer.parseInt(input.substring(0, colonIndex));
         String bricksLetters = input.substring(colonIndex + 1);
 
+        // Sprawdzenie, czy po numerze instrukcji występują tylko litery A-O
+
+
         if (number == 0) {
+
+            // Sprawdzenie, czy po numerze instrukcji występują tylko litery A-O
+            if (!bricksLetters.matches("^[A-O]+$")) {
+                System.out.println("klops");
+                System.exit(0);
+                return;
+            }
+
+
             bricksLeftInBox++;
             Box.getInstance().addBrick(bricksLetters);
 
         } else if (number > 0 && number <= 1000) {
+            if (!bricksLetters.matches("^[A-N]+$")) {
+                System.out.println("klops");
+                System.exit(0);
+                return;
+            }
             //jesli jest juz utworzona dana instrukcja to dodaje do niej nowe klocki, jesli
             // nie ma nowej instrukcji to tworzę ją dodaje klocki i dodaje do setu z instrukcjami
             boolean CreateNewList = true;
