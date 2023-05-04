@@ -14,7 +14,6 @@ public class Bricks {
         }
         BuildingProcess();
 
-        printInformation();
     }
 
     //ta funkcja zapisuje dane
@@ -44,12 +43,12 @@ public class Bricks {
                 }
             }
 
-            if(CreateNewList) {
+            if (CreateNewList) {
                 Instruction instruction = new Instruction(number);
                 instruction.addBricks(BricksLetters);
                 setOfInstructions.add(instruction);
                 numbersUsedInInstruction.add(number);
-            }else{
+            } else {
                 for (Instruction instruction : setOfInstructions) {
                     if (instruction.getId() == number) {
                         instruction.addBricks(BricksLetters);
@@ -57,25 +56,25 @@ public class Bricks {
                     }
                 }
             }
-        }else{
+        } else {
             System.out.println("nieprawidłowa liczba");
         }
     }
 
-    public static void BuildingProcess(){
+    public static void BuildingProcess() {
         for (Instruction instruction : setOfInstructions) {
-            if (instruction.getId()%3==0) {
+            if (instruction.getId() % 3 == 0) {
 
-                System.out.println("sprawdzam kocki dla instrukcji numer "+ instruction.getId()+"\n");
+                System.out.println("sprawdzam kocki dla instrukcji numer " + instruction.getId() + "\n");
 
                 build(instruction);
 
             }
         }
         for (Instruction instruction : setOfInstructions) {
-            if (!(instruction.getId()%3==0)) {
+            if (!(instruction.getId() % 3 == 0)) {
 
-                System.out.println("sprawdzam kocki dla instrukcji numer "+ instruction.getId()+"\n");
+                System.out.println("sprawdzam kocki dla instrukcji numer " + instruction.getId() + "\n");
 
                 build(instruction);
 
@@ -88,38 +87,150 @@ public class Bricks {
         Box box = Box.getInstance();
         boolean allBricksFound = true;
         for (String brickInInstruction : instruction.ArrayOfBricks) {
-            if (brickInInstruction==null){
+            if (brickInInstruction == null) {
                 break;
             }
             boolean brickFound = false;
             for (int i = 0; i < box.index; i++) {
                 if (box.getBrickArray()[i] != null && box.getBrickArray()[i].equals(brickInInstruction)) {
-                    System.out.println("został znaleziony klocek "+ brickInInstruction+ "\n");
+                    System.out.println("został znaleziony klocek " + brickInInstruction + "\n");
                     brickFound = true;
                     box.getBrickArray()[i] = null;
+                    //TODO TUTAJ MOZE BYC PROBLEM Z TYM ZE JAK INSTRUKCJA SIE OKAZE NIEWYKONALNA TO I ATK POLICZY KLOCKI JAKO UZYTE
                     break;
                 }
             }
             if (!brickFound) {
                 allBricksFound = false;
-                System.out.println("nie został znaleniony klocek" + brickInInstruction + " dla budowli "+ instruction.getId()+"\n");
+                System.out.println("nie został znaleniony klocek" + brickInInstruction + " dla budowli " + instruction.getId() + "\n");
                 break;
             }
         }
         instruction.itIsPossibleToBuild = allBricksFound;
     }
 
+    public int[] contOfBuildingsPossible() {
+        int counterPossible = 0;
+        int counterNotPossible = 0;
+        for (Instruction i : setOfInstructions) {
+            if (i.itIsPossibleToBuild) {
+                counterPossible++;
+            } else counterNotPossible++;
+        }
+        return new int[]{counterPossible, counterNotPossible};
+    }
+
+    public int countingOfUsedBlocksInFirstStep() {
+        int counter=0;
+        for (Instruction i : setOfInstructions) {
+            if(i.getId()%3==0 && i.itIsPossibleToBuild){
+               counter += i.ArrayOfBricks.length;
+               //TODO MOZE PRZELICZAC TEZ NULL DO SPRAWDZEIA
+            }
+        }
+        return counter;
+    }
+
+    public int countingOfUsedBlocksInSecondStep() {
+        int counter=0;
+        for (Instruction i : setOfInstructions) {
+            if(!(i.getId()%3==0) && i.itIsPossibleToBuild){
+                counter += i.ArrayOfBricks.length;
+                //TODO MOZE PRZELICZAC TEZ NULL DO SPRAWDZEIA
+            }
+        }
+        return counter;
+    }
+
+    public int countingOfReminderBlocksInBox(){
+        int blockReminderInbox=0;
+        int AllBlockInBox = 0;
+         Box box = Box.getInstance();
 
 
+         for(String BricksInBox : box.getBrickArray() ){
 
-    private static void printInformation(){
-        for(Instruction instruction : setOfInstructions){
-            System.out.print("instrukcja numer "+ instruction.getId());
-            if(instruction.itIsPossibleToBuild){
-                System.out.print(" jest możliwa do zbudowania"+"\n");
-            }else {
-                System.out.print(" nie jest możliwa do zbudowania"+"\n");
+             if(BricksInBox!=null){
+                 AllBlockInBox++;
+             }
+
+
+         }
+
+         for(String BrickFromBox: box.getBrickArray()) {
+
+             if (BrickFromBox != null) {
+
+                 for (Instruction i : setOfInstructions) {
+
+                     if (i.itIsPossibleToBuild) {
+
+
+                         for (String BrickFromInstruction : i.ArrayOfBricks) {
+
+                             if(BrickFromInstruction!=null) {
+
+
+                                 if (BrickFromBox == BrickFromInstruction) {
+
+                                     blockReminderInbox++;
+
+                                 }
+                             }
+                         }
+
+                     }
+
+                 }
+
+             }
+         }
+
+         return AllBlockInBox - blockReminderInbox;
+
+    }
+
+
+    public int countingOfLackingBlocks(){
+
+        Box box = Box.getInstance();
+
+        for(String BrickFromBox: box.getBrickArray()) {
+
+            if (BrickFromBox != null) {
+
+                for (Instruction i : setOfInstructions) {
+
+                    if (!(i.itIsPossibleToBuild)) {
+                        //todo tutaj zrobic ostatni punkt
+
+
+                        for (String BrickFromInstruction : i.ArrayOfBricks) {
+
+                            if(BrickFromInstruction!=null) {
+
+
+                                if (BrickFromBox == BrickFromInstruction) {
+
+                                    blockReminderInbox++;
+
+                                }
+                            }
+                        }
+                        //todo a tu koniec przerobekl
+
+                    }
+
+                }
+
             }
         }
     }
+
+    //todo Łączną liczbę klocków, których brakowało
+    // w pudełku podczas realizacji poszczególnych instrukcji
+
+
+
+
 }
